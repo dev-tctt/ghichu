@@ -747,6 +747,48 @@ let q = '';
     return /^(https?:\/\/|www\.)/i.test(s.trim());
   }
 
+  
+function escapeHTML(s){
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+function escapeAttr(s){
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+function hasURL(s){
+  if (!s || typeof s !== 'string') return false;
+  const re = /(\b(https?:\/\/|www\.)[^\s<>()]+[^\s.,;:!?)<>\n\r])/i;
+  return re.test(s);
+}
+function linkify(text){
+  if (!text) return '';
+  const re = /(\b(https?:\/\/|www\.)[^\s<>()]+[^\s.,;:!?)<>\n\r])/gi;
+  let out = '';
+  let last = 0;
+  let m;
+  while ((m = re.exec(text)) !== null) {
+    const start = m.index;
+    const end = re.lastIndex;
+    const raw = m[0];
+    out += escapeHTML(text.slice(last, start));
+    let href = raw;
+    if (/^www\./i.test(href)) href = 'https://' + href;
+    out += `<a class="link" href="${escapeAttr(href)}" target="_blank" rel="noopener noreferrer nofollow">${escapeHTML(raw)}</a>`;
+    last = end;
+  }
+  out += escapeHTML(text.slice(last));
+  return out;
+}
+
   function render() { rows = cleanRows(rows);
     const tb = document.getElementById('tbody');
     tb.innerHTML = '';
@@ -757,11 +799,11 @@ let q = '';
       
       // Mark row if Nội dung is plain text (not a URL)
       try {
-        if (!isLikelyURL(r.noidung)) { tr.classList.add('plain-row'); }
+        if (!hasURL(r.noidung)) { tr.classList.add('plain-row'); }
       } catch(e) {}
     tr.innerHTML = `
         <td>${i+1}</td>
-        <td>${r.noidung ? (isLikelyURL(r.noidung) ? `<a class="link" href="${r.noidung.startsWith('http')?r.noidung:'https://'+r.noidung}" target="_blank" rel="noopener">${r.noidung}</a>` : r.noidung) : ''}</td>
+        <td>${ r.noidung ? linkify(r.noidung) : "" }</td>
         <td>${r.note || ''}</td>
         <td>${r.time || ''}</td>
         <td class="actions">
