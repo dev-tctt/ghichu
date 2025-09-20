@@ -392,6 +392,33 @@ table, th, td {
   border: 1px solid #16a34a !important;
 }
 
+
+    .quick-link {
+      background: #3b82f6; 
+      color: #fff;
+      width: 42px; height: 42px;
+      min-width: 42px;
+      display: grid;
+      place-items: center;
+      font-size: 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .quick-link:hover { background: #2563eb; }
+
+    /* Tooltip gộp */
+    button[title], .quick-link[title], .delete-all[title] { position:relative; overflow:visible; }
+    button[title]:hover::after, .quick-link[title]:hover::after, .delete-all[title]:hover::after {
+      content: attr(title);
+      position: absolute;
+      bottom: 110%; left: 50%; transform: translateX(-50%);
+      background: #000; color: #fff; padding: 4px 8px;
+      border-radius: 6px; font-size: 12px; white-space: nowrap; opacity: .95;
+      z-index: 1000; animation: fadeInTooltip 120ms ease-out;
+    }
+    @keyframes fadeInTooltip { from{opacity:0;transform:translate(-50%,-4px);} to{opacity:.95;transform:translate(-50%,0);} }
+
 </style>
 </head>
 <body>
@@ -415,7 +442,13 @@ table, th, td {
         <input id="importXLSX" type="file" accept=".xlsx,.xls" onchange="importExcel(event)" />
       </label>
       <button class="template" onclick="downloadExcelTemplate()">Tải file mẫu Excel</button>
+      
+      <a href="https://dev-tctt.github.io/phacdo/" target="_blank" class="quick-link" title="Phác đồ Vacxin">🛡️</a>
+      <a href="https://dev-tctt.github.io/tinhtuoi/" target="_blank" class="quick-link" title="Tính tuổi + số tiền còn lại trong gói">🔢</a>
+      <a href="https://dev-tctt.github.io/hethong/" target="_blank" class="quick-link" title="Thông tin hệ thống">🛠️</a>
+
       <button class="delete-all" onclick="clearAll()" title="Xóa tất cả">💣</button>
+
       <span id="reverseToggle" data-tooltip="Sắp xếp" style="position:relative;display:inline-flex;align-items:center;justify-content:center;width:42px;min-width:42px;height:42px;background:#22c55e;color:#ffffff;border:1px solid #16a34a;border-radius:6px;font-size:18px;line-height:1;cursor:pointer;user-select:none;box-shadow:0 1px 0 rgba(0,0,0,.05);">⬆⬇</span>
       <div class="lock" id="lockBox">
         <button class="btn gray" id="unlockBtn" onclick="unlock()" title="Mở khóa">🔐</button>
