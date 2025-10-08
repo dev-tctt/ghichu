@@ -932,7 +932,14 @@ function linkify(text){
     const aoa = [['Nội dung','Ghi chú','Thời gian'], ...src.map(r => [r.noidung || '', r.note || '', r.time || ''])];
     const ws = XLSX.utils.aoa_to_sheet(aoa);
     XLSX.utils.book_append_sheet(wb, ws, 'Links');
-    XLSX.writeFile(wb, 'file_mau.xlsx');
+    
+const now = new Date();
+const dd = String(now.getDate()).padStart(2, '0');
+const mm = String(now.getMonth() + 1).padStart(2, '0');
+const yyyy = now.getFullYear();
+const filename = `ghichu_${dd}-${mm}-${yyyy}.xlsx`;
+XLSX.writeFile(wb, filename);
+
   }
 
   function downloadExcelTemplate() {
